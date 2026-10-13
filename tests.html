@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<title>VOC Voice Agent 测试</title>
+<style>
+  body { font-family:-apple-system,"PingFang SC",sans-serif; padding:24px; }
+  li.pass { color:#16a34a; } li.fail { color:#dc2626; font-weight:600; }
+  #summary { font-size:1.1rem; font-weight:700; }
+</style>
+</head>
+<body>
+<h1>VOC Voice Agent 测试</h1>
+<div id="summary"></div>
+<ul id="out"></ul>
+<script src="src/data.js"></script>
+<script src="src/engine.js"></script>
+<script>
+  const results = [];
+  function test(name, fn) {
+    try { fn(); results.push([name, true]); }
+    catch (e) { results.push([name + " — " + e.message, false]); }
+  }
+  function ok(v, msg) { if (!v) throw new Error(msg || "断言失败"); }
+
+  test("价格关口回答必须引用原声", () => {
+    const r = VocAgent.answer("A9 价格心理关口是多少？");
+    ok(!r.error, r.error);
+    ok(r.citations.length >= 1);
+    ok(r.text.includes("万"));
+  });
+
+  test("无匹配问题时拒绝臆造", () => {
+    const r = VocAgent.answer("火星车轮胎气味怎么样");
+    ok(r.error || (r.citations && r.citations.length), "应报错或仅在有引用时回答");
+    if (!r.error) ok(r.citations.length >= 1);
+  });
+
+  test("议题统计含点赞加权负面率", () => {
+    const st = VocAgent.topicStats("price");
+    ok(st.n >= 3);
+    ok(st.negRateByLikes >= 0 && st.negRateByLikes <= 1);
+  });
+
+  test("四步话术绑定一条原声", () => {
+    const r = VocAgent.answer("生成价格议题四步话术");
+    ok(!r.error);
+    ok(r.text.includes("认同") && r.text.includes("落地"));
+    ok(r.citations.length >= 1);
+  });
+
+  test("禁止话术拦截绝对化与贬低竞品", () => {
+    const bad = VocAgent.checkScript("我们保证提车，竞品垃圾，一定升值");
+    ok(!bad.ok);
+    ok(bad.hits.length >= 2);
+    const good = VocAgent.checkScript("建议到店按通勤场景试驾对比");
+    ok(good.ok);
+  });
+
+  test("质检意图走检查分支", () => {
+    const r = VocAgent.answer("检查：私下转账免定金");
+    ok(!r.error);
+    ok(r.text.includes("不能发布") || r.text.includes("F3"));
+  });
+
+  const passed = results.filter((r) => r[1]).length;
+  document.getElementById("summary").textContent = `${passed}/${results.length} passed`;
+  document.title = `${passed}/${results.length} passed`;
+  document.getElementById("out").innerHTML = results.map(([n, p]) =>
+    `<li class="${p ? "pass" : "fail"}">${p ? "✓" : "✕"} ${n}</li>`).join("");
+</script>
+</body>
+</html>

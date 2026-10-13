@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>VOC Voice Agent · 用户原声助手</title>
+<link rel="stylesheet" href="src/style.css"/>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><strong>VOC Voice Agent</strong><span>用户原声助手</span></div>
+  <span class="badge">虚构品牌 A9/A8/M7 · 无原声不回答</span>
+  <div class="chips" id="chips"></div>
+</header>
+<main>
+  <p class="hint">对齐 <a href="https://github.com/annawzhang/voc-insight-kit">voc-insight-kit</a>：点赞加权、价格关口、四步话术、禁止话术检查。Agent 只能引用语料里的原声，不能臆造。</p>
+  <div class="log" id="log"></div>
+  <form class="composer" id="form">
+    <input id="q" placeholder="例如：A9 的价格心理关口是多少？ / 生成续航议题四步话术 / 检查：一定升值零故障" autocomplete="off"/>
+    <button type="submit">发送</button>
+  </form>
+</main>
+<script src="src/data.js"></script>
+<script src="src/engine.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>
