@@ -79,12 +79,20 @@
 
   function detectIntent(text) {
     const t = text || "";
-    if (/价格|价位|多少钱|心理|关口|天花板/.test(t)) return { kind: "price_ceiling" };
-    if (/话术|怎么回|四步|话术包/.test(t)) {
-      const topic = D.TOPICS.find((x) => t.includes(x.name) || t.includes(x.key));
-      return { kind: "script", topic: (topic && topic.key) || "price" };
-    }
+    // 质检 / 话术优先于议题关键词，避免「生成价格四步话术」被当成价格关口
     if (/检查|质检|能不能发/.test(t)) return { kind: "qa", script: t };
+    if (/话术|怎么回|四步|话术包/.test(t)) {
+      let topicKey = "price";
+      if (/续航|能耗/.test(t)) topicKey = "range";
+      else if (/空间|家用/.test(t)) topicKey = "space";
+      else if (/智能|车机|座舱/.test(t)) topicKey = "smart";
+      else if (/交付|服务|售后/.test(t)) topicKey = "service";
+      else if (/外观|设计/.test(t)) topicKey = "design";
+      else if (/竞品|对比/.test(t)) topicKey = "compete";
+      else if (/价格|价位|性价比/.test(t)) topicKey = "price";
+      return { kind: "script", topic: topicKey };
+    }
+    if (/价格|价位|多少钱|心理|关口|天花板/.test(t)) return { kind: "price_ceiling" };
     if (/续航|能耗/.test(t)) return { kind: "topic", topic: "range" };
     if (/空间|家用/.test(t)) return { kind: "topic", topic: "space" };
     if (/智能|车机|座舱/.test(t)) return { kind: "topic", topic: "smart" };
