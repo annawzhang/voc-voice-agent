@@ -2,6 +2,11 @@
 
 > **数据已脱敏**：品牌与全部原声虚构；不含真实车主评论 / 门店 / 内部舆情库。
 
+
+> **Copyright © 2026 张文婧 (Anna Zhang)** · [MIT License](./LICENSE) · [github.com/annawzhang](https://github.com/annawzhang)  
+> 欢迎学习与面试查阅；保留版权与许可声明。**禁止删除作者信息后冒充本人作品二次发表。** 公开内容为虚构/脱敏演示数据。
+
+
 **理想汽车舆情方法的公开 Agent 全栈（与腾讯 98008 独立）：对话入口 · 意图调度 · Skill 白名单 · 原声证据 · Kit 治理；无原声引用则拒答。**
 
 [在线体验](https://annawzhang.github.io/voc-voice-agent/) · [浏览器测试](https://annawzhang.github.io/voc-voice-agent/tests.html) · [架构手册 §11](https://annawzhang.github.io/people-product-handbook/sections/11-voc-agent.html) · 原生 JavaScript
